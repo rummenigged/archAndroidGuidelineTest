@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Bitcoin",
+    "price": "8.558"
+  },
+  {
+    "name": "Ethereum",
+    "price": "534.64"
+  },
+  {
+    "name": "Ripple",
+    "price": "0.69"
+  },
+  {
+    "name": "Bitcoin Cash",
+    "price": "979.61"
+  }
+]
