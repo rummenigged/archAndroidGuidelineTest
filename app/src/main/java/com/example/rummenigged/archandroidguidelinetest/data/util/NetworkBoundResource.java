@@ -22,6 +22,7 @@ import java.util.List;
 public abstract class NetworkBoundResource<ResultType, RequestType> {
     private static final  String TAG = NetworkBoundResource.class.getSimpleName();
     private final MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
+    private DataMapper<RequestType> mapper;
 
     @MainThread
     protected NetworkBoundResource(){
@@ -86,18 +87,22 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     }
 
     private Resource<Boolean> isDataSafe(RequestType data){
+        Log.d(TAG, "isDataSafe: ");
         try {
             if (data instanceof List) {
                 for (int i = 0; i < ((List) data).size(); i++) {
-                    map().assertEssentialParams(((List) data).get(i));
+//                    map().assertEssentialParams(((List) data).get(i));
+                    mapper.assertEssentialParams((RequestType) ((List) data).get(i));
                 }
             } else {
-                map().assertEssentialParams(data);
+//                map().assertEssentialParams(data);
+                mapper.assertEssentialParams(data);
             }
         }catch (EssentialParamMissingException e){
+            Log.d(TAG, "isDataSafe: Error = " + e.getLocalizedMessage());
             return Resource.error(e.getMessage(), false);
         }
-
+        Log.d(TAG, "isDataSafe: Verifiquei");
         return Resource.sucess(true);
     }
 
@@ -105,8 +110,13 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
         return result;
     }
 
-    @WorkerThread
-    protected abstract DataMapper map();
+    public NetworkBoundResource<ResultType, RequestType> map(DataMapper<RequestType> mapper){
+        this.mapper = mapper;
+        Log.d(TAG, "map: Entrei");
+        return this;
+    }
+//    @WorkerThread
+//    protected abstract DataMapper map();
 
     @WorkerThread
     protected abstract void saveCallResult(@NonNull RequestType item);

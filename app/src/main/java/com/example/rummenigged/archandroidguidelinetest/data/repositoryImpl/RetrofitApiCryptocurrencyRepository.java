@@ -3,7 +3,6 @@ package com.example.rummenigged.archandroidguidelinetest.data.repositoryImpl;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -43,14 +42,14 @@ public class RetrofitApiCryptocurrencyRepository implements ApiCryptocurrencyRep
 
 
     @Override
-    public LiveData<Resource<List<CryptocurrencyRaw>>> getCryptocurrency(boolean forceWebserviceCall) {
+    public LiveData getCryptocurrency(boolean forceWebserviceCall) {
 
         return new NetworkBoundResource<List<CryptocurrencyRaw>, List<CryptocurrencyRaw>>() {
 
-            @Override
-            protected DataMapper map() {
-                return mapper;
-            }
+//            @Override
+//            protected DataMapper map() {
+//                return mapper;
+//            }
 
             @Override
             protected void saveCallResult(@NonNull List<CryptocurrencyRaw> item) {
@@ -70,6 +69,7 @@ public class RetrofitApiCryptocurrencyRepository implements ApiCryptocurrencyRep
             @Override
             protected boolean shouldFetch(@Nullable List<CryptocurrencyRaw> data) {
                 return data == null || data.isEmpty() || forceWebserviceCall;
+//                return true;
             }
 
             @SuppressLint("StaticFieldLeak")
@@ -135,6 +135,7 @@ public class RetrofitApiCryptocurrencyRepository implements ApiCryptocurrencyRep
                 return ldResponse;
             }
 
-        }.getAsLiveData();
+        }.map(mapper)
+        .getAsLiveData();
     }
 }
